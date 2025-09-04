@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react';
-import { MessageSquare, Clock, Phone, CheckCircle2, AlertCircle, Send, Paperclip, User, Star, Building2, CreditCard, MapPin, Timer, Eye, EyeOff } from 'lucide-react';
+import { MessageSquare, Clock, Phone, CheckCircle2, AlertCircle, Send, Paperclip, User, Star, Building2, CreditCard, MapPin, Timer, Eye, EyeOff, Smartphone } from 'lucide-react';
 import Card from '@/react-app/components/Card';
 import CustomerProfilePanel from '@/react-app/components/CustomerProfilePanel';
+import WhatsAppMessenger from '@/react-app/components/WhatsAppMessenger';
 
 interface WhatsAppConversation {
   id: number;
@@ -70,6 +71,7 @@ export default function Inbox() {
   const [showCustomerPanel, setShowCustomerPanel] = useState(true);
   const [customerData, setCustomerData] = useState<Customer | null>(null);
   const [recentTickets, setRecentTickets] = useState<Ticket[]>([]);
+  const [showWhatsAppMessenger, setShowWhatsAppMessenger] = useState(false);
 
   const fetchCustomerData = async (customerId: number) => {
     try {
@@ -298,7 +300,7 @@ export default function Inbox() {
           <p className="text-gray-600">Gerencie conversas em tempo real</p>
         </div>
         
-        {/* Stats */}
+        {/* Stats and Actions */}
         <div className="flex items-center space-x-4">
           <div className="flex items-center space-x-2 bg-yellow-50 px-3 py-1 rounded-lg">
             <Clock className="h-4 w-4 text-yellow-600" />
@@ -312,8 +314,33 @@ export default function Inbox() {
             <AlertCircle className="h-4 w-4 text-blue-600" />
             <span className="text-sm font-medium text-blue-700">{botCount} bot</span>
           </div>
+          
+          <button
+            onClick={() => setShowWhatsAppMessenger(!showWhatsAppMessenger)}
+            className={`flex items-center space-x-2 px-4 py-2 rounded-lg transition-colors ${
+              showWhatsAppMessenger 
+                ? 'bg-green-600 text-white' 
+                : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+            }`}
+          >
+            <Smartphone className="h-4 w-4" />
+            <span className="text-sm font-medium">
+              {showWhatsAppMessenger ? 'Ocultar Messenger' : 'Abrir Messenger'}
+            </span>
+          </button>
         </div>
       </div>
+
+      {/* WhatsApp Messenger */}
+      {showWhatsAppMessenger && (
+        <div className="mb-6">
+          <WhatsAppMessenger 
+            customerId={selectedConversation?.customer_id}
+            ticketId={selectedConversation?.ticket_id}
+            initialContact={selectedConversation?.phone_e164}
+          />
+        </div>
+      )}
 
       {/* Main Content */}
       <div className="flex-1 flex gap-4 min-h-0">
